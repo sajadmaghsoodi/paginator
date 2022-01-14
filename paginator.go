@@ -16,6 +16,13 @@ func GetPaginatedResponse(data []interface{}, pageSize int, currentPage int) (st
 	if to > total {
 		to = total
 	}
+	if from > total {
+		from = total
+	}
+
+	if total < 1 {
+		data = make([]interface{}, 0)
+	}
 
 	if isPageNumberValid { //page is not available so we are gonna replace the value with Null
 		data = data[from-1 : to]
