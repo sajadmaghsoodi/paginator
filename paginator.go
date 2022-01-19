@@ -54,8 +54,8 @@ func GetPaginatedResponse(data []interface{}, pageSize int, currentPage int) (st
 	marshalled = strings.Replace(marshalled, `"-PAGE_IS_NULL-"`, "null", 2) //this is for the links
 
 	if !isPageNumberValid {
-		marshalled = strings.Replace(marshalled, `"from": -1`, `"from": null`, 1)
-		marshalled = strings.Replace(marshalled, `"to": -1`, `"to": null`, 1)
+		marshalled = strings.Replace(marshalled, "\"from\": -1", "\"from\": null", 1)
+		marshalled = strings.Replace(marshalled, "\"to\": -1", "\"to\": null", 1)
 	}
 
 	return marshalled, nil
