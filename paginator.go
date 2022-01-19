@@ -11,7 +11,7 @@ func GetPaginatedResponse(data []interface{}, pageSize int, currentPage int) (st
 	lastPage := (total / pageSize) + 1
 	isDataNull := total < 1
 	isPageNumberValid := lastPage >= currentPage
-	from := ((currentPage - 1) * pageSize) + 1
+	from := (currentPage-1)*pageSize + 1
 	to := currentPage * pageSize
 
 	if to > total {
@@ -51,8 +51,12 @@ func GetPaginatedResponse(data []interface{}, pageSize int, currentPage int) (st
 		return "", fmt.Errorf("cannot convert data to json")
 	}
 
-	marshalled = strings.Replace(marshalled, `""`, "null", 2) //this is for the links
-	marshalled = strings.Replace(marshalled, "-1", "null", 2) // for the from and to
+	marshalled = strings.Replace(marshalled, `"-PAGE_IS_NULL-"`, "null", 2) //this is for the links
+
+	if !isPageNumberValid {
+		marshalled = strings.Replace(marshalled, `"from": -1`, `"from": null`, 1)
+		marshalled = strings.Replace(marshalled, `"to": -1`, `"to": null`, 1)
+	}
 
 	return marshalled, nil
 }
@@ -61,6 +65,8 @@ func getLinks(currentPage int, totalPages int) links {
 	var res links
 	res.First = "?page=1"
 	res.Last = fmt.Sprintf("?page=%v", totalPages)
+	res.Prev = "-PAGE_IS_NULL-"
+	res.Next = "-PAGE_IS_NULL-"
 
 	if currentPage > 1 {
 		res.Prev = fmt.Sprintf("?page=%v", currentPage-1)
